@@ -24,10 +24,8 @@ namespace searchWorker
 
         };
 
-        private const string V = "Стаж: ";
         public worker[] workers = new worker[100];
-        public int j=0;
-
+        public int j = 0;
 
         public Form1()
         {
@@ -36,72 +34,62 @@ namespace searchWorker
 
         private void button1_Click(object sender, EventArgs e)
         {
-            StreamReader objReader = new StreamReader("worker.txt", Encoding.GetEncoding(1251));
-            string sLine = "";
-            textBox1.Text = "";
-            textBox2.Text = "";
-            ArrayList arrText = new ArrayList();
+                textBox1.Text = "";
+                textBox2.Text = "";
+                label1.Text = "";
 
-            while (sLine != null)
+                openFileDialog1.ShowDialog();
+                string filename = openFileDialog1.FileName;
+
+            if (filename.IndexOf(".txt") == -1)
+                MessageBox.Show("Выбран не подходящий файл\r\nТребуется файл формата .txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
             {
-                sLine = objReader.ReadLine();
-                if (sLine != null)
-                    arrText.Add(sLine);
-            }
-            objReader.Close();
+                label1.Text = "Открыт файл: " + filename;
+                string readfile = File.ReadAllText(filename, Encoding.GetEncoding(1251));
 
-            foreach (string sOutput in arrText)
-                textBox1.Text += sOutput + '\r' + '\n';
+                textBox1.Text = readfile;
 
-            textBox1.Text += "File is read!\r\n\r\n\r\n";
+                string[] mas = textBox1.Text.Split('\n');
 
-
-
-
-            string[] mas = textBox1.Text.Split('\n');
-
-
-
-            for (int i = 0; i < mas.Length; i++)
-            {
-                string a = mas[i];
-                if (a.IndexOf("ФИО") != -1)
-                    workers[j].fio = a;
-                if (a.IndexOf("@") != -1)
-                    workers[j].email = a;
-                if (a.IndexOf("Стаж") != -1)
-                {                    
-                    string[] df = mas[i].Split(' ');
-                    
-                    workers[j].cval = Convert.ToInt32(df[1]);
-                }
-                if (a.IndexOf("*") != -1)
-                    j++;
-
-            }
-            /*
-            for (int i = 0; i < j; i++)
-            {
-                
-                textBox2.Text += "fio =" + workers[i].fio + "\r\n";
-                textBox2.Text += "@" + workers[i].email + "\r\n";
-                textBox2.Text += "cval =" + workers[i].cval + "\r\n";
-            }
-            */
-
-
-            int max = 0, max_i = 0;
-            for (int i = 0; i<=j; i++)
-            {
-                if (max < workers[i].cval)
+                for (int i = 0; i < mas.Length; i++)
                 {
-                    max = workers[i].cval;
-                    max_i = i;
+                    if (mas[i].IndexOf("ФИО") != -1)
+                        workers[j].fio = mas[i];
+                    if (mas[i].IndexOf("@") != -1)
+                        workers[j].email = mas[i];
+                    if (mas[i].IndexOf("Стаж") != -1)
+                    {
+                        string[] df = mas[i].Split(' ');
+                        workers[j].cval = Convert.ToInt32(df[1]);
+                    }
+                    if (mas[i].IndexOf("*") != -1)
+                        j++;
                 }
-            }
 
-            textBox2.Text = "Лучший стаж:" + workers[max_i].cval + "\r\n";
-            textBox2.Text += workers[max_i].fio + "\r\n" + workers[max_i].email;
+                /*
+                for (int i = 0; i < j; i++)
+                {
+
+                    textBox2.Text += "fio =" + workers[i].fio + "\r\n";
+                    textBox2.Text += "@" + workers[i].email + "\r\n";
+                    textBox2.Text += "cval =" + workers[i].cval + "\r\n";
+                }
+                */
+
+                int max = 0, max_i = 0;
+                for (int i = 0; i <= j; i++)
+                {
+                    if (max < workers[i].cval)
+                    {
+                        max = workers[i].cval;
+                        max_i = i;
+                    }
+                }
+
+                textBox2.Text = "Лучший стаж:" + workers[max_i].cval + "\r\n";
+                textBox2.Text += workers[max_i].fio + "\r\n" + workers[max_i].email;
+            }
         }
     }
 }
